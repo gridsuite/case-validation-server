@@ -28,9 +28,9 @@
 <url>http://www.gridsuite.org</url>
 
 <scm>
-    <connection>scm:git:https://github.com/gridsuite/network-modification-server.git</connection>
-    <developerConnection>scm:git:https://github.com/gridsuite/network-modification-server.git</developerConnection>
-    <url>https://github.com/gridsuite/network-modification-server</url>
+    <connection>scm:git:https://github.com/gridsuite/case-validation-server.git</connection>
+    <developerConnection>scm:git:https://github.com/gridsuite/case-validation-server.git</developerConnection>
+    <url>https://github.com/gridsuite/case-validation-server</url>
 </scm>
 
 <developers>

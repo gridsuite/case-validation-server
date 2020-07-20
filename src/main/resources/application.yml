@@ -3,7 +3,7 @@ spring:
     name: case-validation-server
 
 server:
-  port: 5010
+  port: 5011
 
 network-store-server:
   base-uri: http://localhost:8080

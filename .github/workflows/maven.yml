@@ -64,4 +64,4 @@ jobs:
         uses: gridsuite/broadcast-event@master
         with:
           token: ${{ secrets.REPO_ACCESS_TOKEN }}
-          event-type: casevalidation_server_updated
+          event-type: case-validation_server_updated
