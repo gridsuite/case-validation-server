@@ -1,0 +1,9 @@
+spring:
+  application:
+    name: case-validation-server
+
+server:
+  port: 5011
+
+network-store-server:
+  base-uri: http://localhost:8080
