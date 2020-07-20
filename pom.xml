@@ -144,6 +144,13 @@
         <scope>runtime</scope>
     </dependency>
 
+    <dependency>
+        <groupId>com.powsybl</groupId>
+        <artifactId>powsybl-iidm-impl</artifactId>
+        <version>${powsybl-core.version}</version>
+        <scope>runtime</scope>
+    </dependency>
+
     <!-- Test dependencies -->
     <dependency>
         <groupId>org.mockito</groupId>
@@ -170,6 +177,12 @@
     <dependency>
         <groupId>com.powsybl</groupId>
         <artifactId>powsybl-config-test</artifactId>
+        <version>${powsybl-core.version}</version>
+        <scope>test</scope>
+    </dependency>
+    <dependency>
+        <groupId>com.powsybl</groupId>
+        <artifactId>powsybl-iidm-test</artifactId>
         <version>${powsybl-core.version}</version>
         <scope>test</scope>
     </dependency>
