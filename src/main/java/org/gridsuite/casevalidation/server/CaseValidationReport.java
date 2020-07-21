@@ -25,19 +25,4 @@ public class CaseValidationReport {
         this.loadFlowOk = loadFlowOk;
     }
 
-    public boolean isLoadFlowOk() {
-        return loadFlowOk;
-    }
-
-    public void setLoadFlowOk(boolean loadFlowOk) {
-        this.loadFlowOk = loadFlowOk;
-    }
-
-    public Map<String, String> getMetrics() {
-        return metrics;
-    }
-
-    public void setMetrics(Map<String, String> metrics) {
-        this.metrics = metrics;
-    }
 }
