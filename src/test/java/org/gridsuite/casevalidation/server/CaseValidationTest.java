@@ -64,11 +64,11 @@ public class CaseValidationTest {
         given(networkStoreService.getNetwork(notFoundNetworkId, PreloadingStrategy.COLLECTION)).willThrow(new PowsyblException());
 
         // network not existing
-        mvc.perform(put("/v1/networks/{networkUuid}/check", notFoundNetworkId))
+        mvc.perform(put("/v1/networks/{networkUuid}/validate", notFoundNetworkId))
                 .andExpect(status().isNotFound());
 
         // load flow without parameters (default parameters are used)
-        MvcResult result = mvc.perform(put("/v1/networks/{networkUuid}/check", testNetworkId))
+        MvcResult result = mvc.perform(put("/v1/networks/{networkUuid}/validate", testNetworkId))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andReturn();
@@ -86,7 +86,7 @@ public class CaseValidationTest {
         JsonLoadFlowParameters.write(params, stream);
         String paramsString = new String(stream.toByteArray());
 
-        result = mvc.perform(put("/v1/networks/{networkUuid}/check", testNetworkId)
+        result = mvc.perform(put("/v1/networks/{networkUuid}/validate", testNetworkId)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(paramsString))
                 .andExpect(status().isOk())
