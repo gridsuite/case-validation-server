@@ -9,6 +9,7 @@ package org.gridsuite.casevalidation.server;
 import com.powsybl.loadflow.LoadFlowParameters;
 import com.powsybl.loadflow.json.JsonLoadFlowParameters;
 import io.swagger.annotations.*;
+
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
