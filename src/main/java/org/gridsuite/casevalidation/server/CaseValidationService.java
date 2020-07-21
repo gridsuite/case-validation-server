@@ -39,12 +39,12 @@ class CaseValidationService {
         }
     }
 
-    LoadFlowResult checkLoadflowConvergence(UUID networkUuid, LoadFlowParameters parameters) {
+    CaseValidationReport validate(UUID networkUuid, LoadFlowParameters parameters) {
         Network network = getNetwork(networkUuid);
         LoadFlowParameters params = parameters != null ? parameters : new LoadFlowParameters();
 
         // launch the load flow on the network
         LoadFlowResult result = LoadFlow.run(network, params);
-        return result;
+        return new CaseValidationReport(result.getMetrics(), result.isOk());
     }
 }

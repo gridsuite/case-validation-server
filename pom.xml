@@ -10,181 +10,169 @@
 <project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
          xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-<modelVersion>4.0.0</modelVersion>
+    <modelVersion>4.0.0</modelVersion>
 
-<parent>
-    <groupId>com.powsybl</groupId>
-    <artifactId>powsybl-parent-ws</artifactId>
-    <version>3</version>
-</parent>
+    <parent>
+        <groupId>com.powsybl</groupId>
+        <artifactId>powsybl-parent-ws</artifactId>
+        <version>3</version>
+    </parent>
 
-<groupId>org.gridsuite</groupId>
-<artifactId>case-validation-server</artifactId>
-<version>1.0.0-SNAPSHOT</version>
+    <groupId>org.gridsuite</groupId>
+    <artifactId>case-validation-server</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
 
-<packaging>jar</packaging>
-<name>Case validation server</name>
-<description>Case validation server</description>
-<url>http://www.gridsuite.org</url>
+    <packaging>jar</packaging>
+    <name>Case validation server</name>
+    <description>Case validation server</description>
+    <url>http://www.gridsuite.org</url>
 
-<scm>
-    <connection>scm:git:https://github.com/gridsuite/case-validation-server.git</connection>
-    <developerConnection>scm:git:https://github.com/gridsuite/case-validation-server.git</developerConnection>
-    <url>https://github.com/gridsuite/case-validation-server</url>
-</scm>
+    <scm>
+        <connection>scm:git:https://github.com/gridsuite/case-validation-server.git</connection>
+        <developerConnection>scm:git:https://github.com/gridsuite/case-validation-server.git</developerConnection>
+        <url>https://github.com/gridsuite/case-validation-server</url>
+    </scm>
 
-<developers>
-    <developer>
-        <name>Etienne HOMER</name>
-        <email>etienne.homer@rte-france.com</email>
-        <organization>RTE</organization>
-        <organizationUrl>http://www.rte-france.com</organizationUrl>
-    </developer>
-</developers>
+    <developers>
+        <developer>
+            <name>Etienne HOMER</name>
+            <email>etienne.homer@rte-france.com</email>
+            <organization>RTE</organization>
+            <organizationUrl>http://www.rte-france.com</organizationUrl>
+        </developer>
+    </developers>
 
-<properties>
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
-    <java.version>11</java.version>
+        <java.version>11</java.version>
 
-    <guava.version>20.0</guava.version>
-    <mockito.version>2.28.2</mockito.version>
-    <springboot.version>2.1.5.RELEASE</springboot.version>
-    <springfox.version>2.9.2</springfox.version>
+        <guava.version>20.0</guava.version>
+        <mockito.version>2.28.2</mockito.version>
+        <springboot.version>2.1.5.RELEASE</springboot.version>
+        <springfox.version>2.9.2</springfox.version>
 
-    <powsybl-core.version>3.4.0</powsybl-core.version>
-    <powsybl-network-store.version>1.0.0-SNAPSHOT</powsybl-network-store.version>
-    <powsybl.open-loadflow.version>0.3.0</powsybl.open-loadflow.version>
-</properties>
+        <powsybl-core.version>3.4.0</powsybl-core.version>
+        <powsybl-network-store.version>1.0.0-SNAPSHOT</powsybl-network-store.version>
+        <powsybl.open-loadflow.version>0.4.0</powsybl.open-loadflow.version>
+    </properties>
 
-<build>
-    <pluginManagement>
+    <build>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-surefire-plugin</artifactId>
+                    <configuration>
+                        <classpathDependencyExcludes>
+                            <classpathDependencyExclude>com.powsybl:powsybl-config-classic</classpathDependencyExclude>
+                        </classpathDependencyExcludes>
+                    </configuration>
+                </plugin>
+            </plugins>
+        </pluginManagement>
         <plugins>
             <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-surefire-plugin</artifactId>
-                <configuration>
-                    <classpathDependencyExcludes>
-                        <classpathDependencyExclude>com.powsybl:powsybl-config-classic</classpathDependencyExclude>
-                    </classpathDependencyExcludes>
-                </configuration>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>pl.project13.maven</groupId>
+                <artifactId>git-commit-id-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>com.google.cloud.tools</groupId>
+                <artifactId>jib-maven-plugin</artifactId>
             </plugin>
         </plugins>
-    </pluginManagement>
-    <plugins>
-        <plugin>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-maven-plugin</artifactId>
-        </plugin>
-        <plugin>
-            <groupId>pl.project13.maven</groupId>
-            <artifactId>git-commit-id-plugin</artifactId>
-        </plugin>
-        <plugin>
-            <groupId>com.google.cloud.tools</groupId>
-            <artifactId>jib-maven-plugin</artifactId>
-        </plugin>
-    </plugins>
-</build>
+    </build>
 
-<dependencyManagement>
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-dependencies</artifactId>
+                <version>${springboot.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
     <dependencies>
+        <!-- Compilation dependencies -->
         <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-dependencies</artifactId>
-            <version>${springboot.version}</version>
-            <type>pom</type>
-            <scope>import</scope>
+            <groupId>io.springfox</groupId>
+            <artifactId>springfox-swagger-ui</artifactId>
+            <version>${springfox.version}</version>
         </dependency>
         <dependency>
-            <groupId>com.google.guava</groupId>
-            <artifactId>guava</artifactId>
-            <version>${guava.version}</version>
+            <groupId>io.springfox</groupId>
+            <artifactId>springfox-swagger2</artifactId>
+            <version>${springfox.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-actuator</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.powsybl</groupId>
+            <artifactId>powsybl-open-loadflow</artifactId>
+            <version>${powsybl.open-loadflow.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.powsybl</groupId>
+            <artifactId>powsybl-network-store-client</artifactId>
+            <version>${powsybl-network-store.version}</version>
+        </dependency>
+
+        <!-- Runtime dependencies -->
+        <dependency>
+            <groupId>com.powsybl</groupId>
+            <artifactId>powsybl-iidm-impl</artifactId>
+            <version>${powsybl-core.version}</version>
+            <scope>runtime</scope>
+        </dependency>
+
+        <!-- Test dependencies -->
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
+            <version>${mockito.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-test-autoconfigure</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>com.powsybl</groupId>
+            <artifactId>powsybl-config-test</artifactId>
+            <version>${powsybl-core.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.powsybl</groupId>
+            <artifactId>powsybl-iidm-test</artifactId>
+            <version>${powsybl-core.version}</version>
+            <scope>test</scope>
         </dependency>
     </dependencies>
-</dependencyManagement>
-
-<dependencies>
-    <!-- Compilation dependencies -->
-    <dependency>
-        <groupId>io.springfox</groupId>
-        <artifactId>springfox-swagger-ui</artifactId>
-        <version>${springfox.version}</version>
-    </dependency>
-    <dependency>
-        <groupId>io.springfox</groupId>
-        <artifactId>springfox-swagger2</artifactId>
-        <version>${springfox.version}</version>
-    </dependency>
-    <dependency>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-starter-actuator</artifactId>
-    </dependency>
-    <dependency>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-starter-web</artifactId>
-    </dependency>
-
-    <dependency>
-        <groupId>com.powsybl</groupId>
-        <artifactId>powsybl-open-loadflow</artifactId>
-        <version>${powsybl.open-loadflow.version}</version>
-    </dependency>
-    <dependency>
-        <groupId>com.powsybl</groupId>
-        <artifactId>powsybl-network-store-client</artifactId>
-        <version>${powsybl-network-store.version}</version>
-    </dependency>
-
-    <!-- Runtime dependencies -->
-    <dependency>
-        <groupId>com.powsybl</groupId>
-        <artifactId>powsybl-config-classic</artifactId>
-        <version>${powsybl-core.version}</version>
-        <scope>runtime</scope>
-    </dependency>
-
-    <dependency>
-        <groupId>com.powsybl</groupId>
-        <artifactId>powsybl-iidm-impl</artifactId>
-        <version>${powsybl-core.version}</version>
-        <scope>runtime</scope>
-    </dependency>
-
-    <!-- Test dependencies -->
-    <dependency>
-        <groupId>org.mockito</groupId>
-        <artifactId>mockito-core</artifactId>
-        <version>${mockito.version}</version>
-        <scope>test</scope>
-    </dependency>
-    <dependency>
-        <groupId>junit</groupId>
-        <artifactId>junit</artifactId>
-        <scope>test</scope>
-    </dependency>
-    <dependency>
-        <groupId>org.springframework</groupId>
-        <artifactId>spring-test</artifactId>
-        <scope>test</scope>
-    </dependency>
-    <dependency>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-test-autoconfigure</artifactId>
-        <scope>test</scope>
-    </dependency>
-
-    <dependency>
-        <groupId>com.powsybl</groupId>
-        <artifactId>powsybl-config-test</artifactId>
-        <version>${powsybl-core.version}</version>
-        <scope>test</scope>
-    </dependency>
-    <dependency>
-        <groupId>com.powsybl</groupId>
-        <artifactId>powsybl-iidm-test</artifactId>
-        <version>${powsybl-core.version}</version>
-        <scope>test</scope>
-    </dependency>
-</dependencies>
 </project>
