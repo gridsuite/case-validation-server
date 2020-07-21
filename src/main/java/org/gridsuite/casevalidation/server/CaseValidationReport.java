@@ -18,6 +18,22 @@ public class CaseValidationReport {
 
     private Map<String, String> metrics;
 
+    public Map<String, String> getMetrics() {
+        return metrics;
+    }
+
+    public void setMetrics(Map<String, String> metrics) {
+        this.metrics = metrics;
+    }
+
+    public boolean isLoadFlowOk() {
+        return loadFlowOk;
+    }
+
+    public void setLoadFlowOk(boolean loadFlowOk) {
+        this.loadFlowOk = loadFlowOk;
+    }
+
     private boolean loadFlowOk;
 
     public CaseValidationReport(Map<String, String> metrics, boolean loadFlowOk) {
