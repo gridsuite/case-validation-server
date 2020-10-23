@@ -75,11 +75,11 @@ public class CaseValidationTest {
         assertTrue(result.getResponse().getContentAsString().contains("status\":\"CONVERGED\""));
 
         // load flow with parameters
-        LoadFlowParameters params = new LoadFlowParameters();
-        params.setNoGeneratorReactiveLimits(true);
-        OpenLoadFlowParameters parametersExt = new OpenLoadFlowParameters()
-                .setSlackBusSelector(new MostMeshedSlackBusSelector())
+        LoadFlowParameters params = new LoadFlowParameters()
+                .setNoGeneratorReactiveLimits(true)
                 .setDistributedSlack(false);
+        OpenLoadFlowParameters parametersExt = new OpenLoadFlowParameters()
+                .setSlackBusSelector(new MostMeshedSlackBusSelector());
         params.addExtension(OpenLoadFlowParameters.class, parametersExt);
 
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
