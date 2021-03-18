@@ -50,6 +50,9 @@ public class CaseValidationTest {
     @MockBean
     private NetworkStoreService networkStoreService;
 
+//    @Inject
+//    private LoadFlowCaseValidationService loadFlowCaseValidationService;
+
     @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);

@@ -6,8 +6,6 @@
  */
 package org.gridsuite.casevalidation.server;
 
-import com.powsybl.loadflow.LoadFlowParameters;
-import com.powsybl.loadflow.json.JsonLoadFlowParameters;
 import io.swagger.annotations.*;
 
 import org.springframework.context.annotation.ComponentScan;
@@ -16,7 +14,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.inject.Inject;
-import java.io.ByteArrayInputStream;
 import java.util.UUID;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
@@ -36,12 +33,7 @@ public class CaseValidationController {
     @PutMapping(value = "/networks/{networkUuid}/validate", produces = APPLICATION_JSON_VALUE)
     @ApiOperation(value = "check case validity", produces = APPLICATION_JSON_VALUE)
     @ApiResponses(value = {@ApiResponse(code = 200, message = "Network has been checked")})
-    public ResponseEntity<CaseValidationReport> validate(@ApiParam(value = "Network UUID") @PathVariable("networkUuid") UUID networkUuid,
-                                                         @RequestBody(required = false) String loadflowParams) {
-        LoadFlowParameters parameters = loadflowParams != null
-                ? JsonLoadFlowParameters.read(new ByteArrayInputStream(loadflowParams.getBytes()))
-                : null;
-
-        return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(caseValidationService.validate(networkUuid, parameters));
+    public ResponseEntity<CaseValidationReport> validate(@ApiParam(value = "Network UUID") @PathVariable("networkUuid") UUID networkUuid) {
+        return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(caseValidationService.validate(networkUuid));
     }
 }

@@ -19,6 +19,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -31,6 +33,15 @@ class CaseValidationService {
     @Autowired
     private NetworkStoreService networkStoreService;
 
+    @Autowired
+    private LoadFlowCaseValidationService loadFlowCaseValidationService;
+
+    public CaseValidationService(NetworkStoreService networkStoreService,
+                                 LoadFlowCaseValidationService loadFlowCaseValidationService) {
+        this.networkStoreService = networkStoreService;
+        this.loadFlowCaseValidationService = loadFlowCaseValidationService;
+    }
+
     private Network getNetwork(UUID networkUuid) {
         try {
             return networkStoreService.getNetwork(networkUuid, PreloadingStrategy.COLLECTION);
@@ -39,12 +50,25 @@ class CaseValidationService {
         }
     }
 
-    CaseValidationReport validate(UUID networkUuid, LoadFlowParameters parameters) {
+    CaseValidationReport validate(UUID networkUuid) {
         Network network = getNetwork(networkUuid);
-        LoadFlowParameters params = parameters != null ? parameters : new LoadFlowParameters();
+        LoadFlowParameters params = new LoadFlowParameters();
+        List<LoadFlowCaseValidationReport> loadFlowReports = new ArrayList<>();
 
         // launch the load flow on the network
         LoadFlowResult result = LoadFlow.run(network, params);
-        return new CaseValidationReport(result.getMetrics(), result.isOk());
+
+        LoadFlowCaseValidationReport report = loadFlowCaseValidationService.validate(network, params);
+        loadFlowReports.add(report);
+        if (report.isLoadFlowOk()) {
+            return new CaseValidationReport(loadFlowReports);
+        }
+
+        // relax loadflow params
+        params.setTransformerVoltageControlOn(false);
+        params.setSimulShunt(false);
+
+        loadFlowReports.add(loadFlowCaseValidationService.validate(network, params));
+        return new CaseValidationReport(loadFlowReports);
     }
 }
