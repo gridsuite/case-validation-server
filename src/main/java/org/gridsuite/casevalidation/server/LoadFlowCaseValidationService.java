@@ -30,6 +30,6 @@ class LoadFlowCaseValidationService {
     }
 
     boolean isMainComponentConverging(LoadFlowResult result) {
-        return result.getMetrics().get(COMPONENT_0_STATUS) == CONVERGED;
+        return result.getMetrics().get(COMPONENT_0_STATUS).equals(CONVERGED);
     }
 }
