@@ -8,9 +8,7 @@ package org.gridsuite.casevalidation.server;
 
 import com.powsybl.commons.PowsyblException;
 import com.powsybl.iidm.network.Network;
-import com.powsybl.loadflow.LoadFlow;
 import com.powsybl.loadflow.LoadFlowParameters;
-import com.powsybl.loadflow.LoadFlowResult;
 import com.powsybl.network.store.client.NetworkStoreService;
 import com.powsybl.network.store.client.PreloadingStrategy;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,9 +52,6 @@ class CaseValidationService {
         Network network = getNetwork(networkUuid);
         LoadFlowParameters params = new LoadFlowParameters();
         List<LoadFlowCaseValidationReport> loadFlowReports = new ArrayList<>();
-
-        // launch the load flow on the network
-        LoadFlowResult result = LoadFlow.run(network, params);
 
         LoadFlowCaseValidationReport report = loadFlowCaseValidationService.validate(network, params);
         loadFlowReports.add(report);
