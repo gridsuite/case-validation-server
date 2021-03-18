@@ -15,12 +15,19 @@ public class CaseValidationReport {
 
     List<LoadFlowCaseValidationReport> loadFlowReports;
 
-    public CaseValidationReport(List<LoadFlowCaseValidationReport> loadFlowReports) {
+    private boolean validationOk;
+
+    public CaseValidationReport(List<LoadFlowCaseValidationReport> loadFlowReports, boolean validationOk) {
         this.loadFlowReports = loadFlowReports;
+        this.validationOk = validationOk;
     }
 
     public List<LoadFlowCaseValidationReport> getLoadFlowReports() {
         return loadFlowReports;
+    }
+
+    public boolean isValidationOk() {
+        return validationOk;
     }
 }
 

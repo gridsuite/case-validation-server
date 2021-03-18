@@ -50,20 +50,22 @@ class CaseValidationService {
 
     CaseValidationReport validate(UUID networkUuid) {
         Network network = getNetwork(networkUuid);
-        LoadFlowParameters params = new LoadFlowParameters();
         List<LoadFlowCaseValidationReport> loadFlowReports = new ArrayList<>();
 
+        //Validation with default loadflow parameters
+        LoadFlowParameters params = new LoadFlowParameters();
         LoadFlowCaseValidationReport report = loadFlowCaseValidationService.validate(network, params);
         loadFlowReports.add(report);
         if (report.isLoadFlowOk()) {
-            return new CaseValidationReport(loadFlowReports);
+            return new CaseValidationReport(loadFlowReports, true);
         }
 
-        // relax loadflow params
+        //Validation with relaxed loadflow parameters
         params.setTransformerVoltageControlOn(false);
         params.setSimulShunt(false);
 
-        loadFlowReports.add(loadFlowCaseValidationService.validate(network, params));
-        return new CaseValidationReport(loadFlowReports);
+        report = loadFlowCaseValidationService.validate(network, params);
+        loadFlowReports.add(report);
+        return new CaseValidationReport(loadFlowReports, report.isLoadFlowOk());
     }
 }
