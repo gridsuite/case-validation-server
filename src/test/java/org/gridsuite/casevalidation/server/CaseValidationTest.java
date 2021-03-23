@@ -91,7 +91,7 @@ public class CaseValidationTest {
         ObjectMapper om = new ObjectMapper();
         JsonNode loadFlowReports = om.readTree(result.getResponse().getContentAsString()).path("loadFlowReports");
         JsonNode validationOk = om.readTree(result.getResponse().getContentAsString()).path("validationOk");
-        assertEquals(loadFlowReports.size(), 2);
+        assertEquals(2, loadFlowReports.size());
         assertTrue(validationOk.asBoolean());
 
         //Make loadflow diverge with default and relaxed parameters
@@ -107,7 +107,7 @@ public class CaseValidationTest {
 
         loadFlowReports = om.readTree(result.getResponse().getContentAsString()).path("loadFlowReports");
         validationOk = om.readTree(result.getResponse().getContentAsString()).path("validationOk");
-        assertEquals(loadFlowReports.size(), 2);
+        assertEquals(2, loadFlowReports.size());
         assertFalse(validationOk.asBoolean());
     }
 
