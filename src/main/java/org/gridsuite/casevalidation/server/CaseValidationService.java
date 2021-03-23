@@ -53,7 +53,14 @@ class CaseValidationService {
         List<LoadFlowCaseValidationReport> loadFlowReports = new ArrayList<>();
 
         //Validation with default loadflow parameters
-        LoadFlowParameters params = new LoadFlowParameters();
+        LoadFlowParameters params = new LoadFlowParameters()
+                .setTransformerVoltageControlOn(true)
+                .setSimulShunt(true)
+                .setDistributedSlack(true)
+                .setBalanceType(LoadFlowParameters.BalanceType.PROPORTIONAL_TO_GENERATION_P_MAX)
+                .setReadSlackBus(true)
+                .setVoltageInitMode(LoadFlowParameters.VoltageInitMode.DC_VALUES);
+
         LoadFlowCaseValidationReport report = loadFlowCaseValidationService.validate(network, params);
         loadFlowReports.add(report);
         if (report.isLoadFlowOk()) {

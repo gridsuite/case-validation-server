@@ -23,8 +23,6 @@ import org.springframework.stereotype.Service;
 @Service
 class LoadFlowCaseValidationService {
     private static final Logger LOGGER = LoggerFactory.getLogger(LoadFlowCaseValidationService.class);
-    private static final String COMPONENT_0_STATUS = "network_0_status";
-    private static final String CONVERGED = "CONVERGED";
 
     LoadFlowCaseValidationReport validate(Network network, LoadFlowParameters params) {
         // launch the load flow on the network
