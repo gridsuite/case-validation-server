@@ -25,7 +25,6 @@ class LoadFlowCaseValidationService {
     private static final Logger LOGGER = LoggerFactory.getLogger(LoadFlowCaseValidationService.class);
 
     LoadFlowCaseValidationReport validate(Network network, LoadFlowParameters params) {
-        // launch the load flow on the network
         LoadFlowResult result = LoadFlow.run(network, params);
         LOGGER.info("Loadflow validation for case {} with loadflow parameters : {}", network.getId(), params);
         boolean isLoadFlowOk = isMainComponentConverging(result);
