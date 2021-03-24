@@ -76,25 +76,38 @@ public class CaseValidationTest {
         mvc.perform(put("/v1/networks/{networkUuid}/validate", notFoundNetworkId))
                 .andExpect(status().isNotFound());
 
-        Network network = createNetworkWithT2wt();
+        //Loadlow converges with default parameters
+        Network network = createNetwork();
+        ObjectMapper om = new ObjectMapper();
+        given(networkStoreService.getNetwork(testNetworkId, PreloadingStrategy.COLLECTION)).willReturn(network);
 
+        MvcResult result = mvc.perform(put("/v1/networks/{networkUuid}/validate", testNetworkId))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andReturn();
+        JsonNode loadFlowReports = om.readTree(result.getResponse().getContentAsString()).path("loadFlowReports");
+        JsonNode validationOk = om.readTree(result.getResponse().getContentAsString()).path("validationOk");
+        assertEquals(1, loadFlowReports.size());
+        assertTrue(validationOk.asBoolean());
+
+        //Loadlow diverges with default parameters and converges with relaxed ones
+        network = createNetworkWithT2wt();
         t2wt.getRatioTapChanger().setRegulationTerminal(load2.getTerminal());
         t2wt.getRatioTapChanger().setTargetDeadband(0).setRegulating(true);
         line12.setX(0.0001);
 
         given(networkStoreService.getNetwork(testNetworkId, PreloadingStrategy.COLLECTION)).willReturn(network);
-        MvcResult result = mvc.perform(put("/v1/networks/{networkUuid}/validate", testNetworkId))
+        result = mvc.perform(put("/v1/networks/{networkUuid}/validate", testNetworkId))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andReturn();
 
-        ObjectMapper om = new ObjectMapper();
-        JsonNode loadFlowReports = om.readTree(result.getResponse().getContentAsString()).path("loadFlowReports");
-        JsonNode validationOk = om.readTree(result.getResponse().getContentAsString()).path("validationOk");
+        loadFlowReports = om.readTree(result.getResponse().getContentAsString()).path("loadFlowReports");
+        validationOk = om.readTree(result.getResponse().getContentAsString()).path("validationOk");
         assertEquals(2, loadFlowReports.size());
         assertTrue(validationOk.asBoolean());
 
-        //Make loadflow diverge with default and relaxed parameters
+        //Make loadflow diverge with both default and relaxed parameters
         network.getGenerator("GEN_1").setTargetV(10);
 
         given(networkStoreService.getNetwork(testNetworkId, PreloadingStrategy.COLLECTION)).willReturn(network);
@@ -102,7 +115,6 @@ public class CaseValidationTest {
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andReturn();
-        System.out.println(result.getResponse().getContentAsString());
         assertTrue(result.getResponse().getContentAsString().contains("\"validationOk\":false"));
 
         loadFlowReports = om.readTree(result.getResponse().getContentAsString()).path("loadFlowReports");
