@@ -36,7 +36,6 @@ class LoadFlowCaseValidationService {
 
     boolean isMainComponentConverging(LoadFlowResult result) {
         //Open LoadFlow and HADES 2 return the main synchronous component result as component 0;
-        //return result.getMetrics().get(COMPONENT_0_STATUS).equals(CONVERGED);
         return result.getComponentResults().get(0).getStatus() == LoadFlowResult.ComponentResult.Status.CONVERGED;
     }
 

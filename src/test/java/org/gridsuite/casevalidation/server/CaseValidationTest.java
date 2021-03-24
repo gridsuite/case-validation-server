@@ -107,7 +107,7 @@ public class CaseValidationTest {
         assertEquals(2, loadFlowReports.size());
         assertTrue(validationOk.asBoolean());
 
-        //Make loadflow diverge with both default and relaxed parameters
+        //Loadflow diverges with both default and relaxed parameters
         network.getGenerator("GEN_1").setTargetV(10);
 
         given(networkStoreService.getNetwork(testNetworkId, PreloadingStrategy.COLLECTION)).willReturn(network);
