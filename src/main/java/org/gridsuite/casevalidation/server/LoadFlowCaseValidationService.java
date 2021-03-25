@@ -27,7 +27,7 @@ class LoadFlowCaseValidationService {
     LoadFlowCaseValidationReport validate(Network network, LoadFlowParameters params) {
         LoadFlowResult result = LoadFlow.run(network, params);
         LOGGER.info("Loadflow validation for case {} with loadflow parameters : {}", network.getId(), params);
-        boolean isLoadFlowOk = result.isOk() ? isMainComponentConverging(result) : false;
+        boolean isLoadFlowOk = result.isOk() && isMainComponentConverging(result);
         LOGGER.info("Loadflow status: {}", isLoadFlowOk ? "OK" : "KO");
         LOGGER.info("Loadflow metrics: {}", result.getMetrics());
         return new LoadFlowCaseValidationReport(result.getMetrics(), isLoadFlowOk, params);
@@ -35,7 +35,7 @@ class LoadFlowCaseValidationService {
 
     boolean isMainComponentConverging(LoadFlowResult result) {
         //Open LoadFlow and HADES 2 return the main synchronous component result as component 0;
-        if (result.getComponentResults() == null || result.getComponentResults().size() == 0) {
+        if (result.getComponentResults() == null || result.getComponentResults().isEmpty()) {
             return false;
         }
         return result.getComponentResults().get(0).getStatus() == LoadFlowResult.ComponentResult.Status.CONVERGED;
