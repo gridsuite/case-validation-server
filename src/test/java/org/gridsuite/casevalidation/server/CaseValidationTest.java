@@ -115,7 +115,6 @@ public class CaseValidationTest {
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andReturn();
-        assertTrue(result.getResponse().getContentAsString().contains("\"validationOk\":false"));
 
         loadFlowReports = om.readTree(result.getResponse().getContentAsString()).path("loadFlowReports");
         validationOk = om.readTree(result.getResponse().getContentAsString()).path("validationOk");
