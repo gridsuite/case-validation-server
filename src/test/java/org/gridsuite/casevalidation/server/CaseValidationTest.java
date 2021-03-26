@@ -82,7 +82,7 @@ public class CaseValidationTest {
         given(networkStoreService.getNetwork(testNetworkId, PreloadingStrategy.COLLECTION)).willReturn(network);
 
         MvcResult result = mvc.perform(put("/v1/networks/{networkUuid}/validate", testNetworkId))
-                .andExpect(status().isOk())
+                    .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andReturn();
         JsonNode loadFlowReports = om.readTree(result.getResponse().getContentAsString()).path("loadFlowReports");

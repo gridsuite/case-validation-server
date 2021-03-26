@@ -13,7 +13,7 @@ import java.util.List;
  */
 public class CaseValidationReport {
 
-    List<LoadFlowCaseValidationReport> loadFlowReports;
+    private List<LoadFlowCaseValidationReport> loadFlowReports;
 
     private boolean validationOk;
 

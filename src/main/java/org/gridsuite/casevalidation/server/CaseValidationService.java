@@ -6,25 +6,22 @@
  */
 package org.gridsuite.casevalidation.server;
 
+import com.google.common.collect.Iterables;
 import com.powsybl.commons.PowsyblException;
 import com.powsybl.iidm.network.Network;
-import com.powsybl.loadflow.LoadFlowParameters;
 import com.powsybl.network.store.client.NetworkStoreService;
 import com.powsybl.network.store.client.PreloadingStrategy;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
 /**
  * @author Etienne Homer <etienne.homer at rte-france.com>
  */
-@ComponentScan(basePackageClasses = {NetworkStoreService.class})
 @Service
 class CaseValidationService {
 
@@ -50,29 +47,7 @@ class CaseValidationService {
 
     CaseValidationReport validate(UUID networkUuid) {
         Network network = getNetwork(networkUuid);
-        List<LoadFlowCaseValidationReport> loadFlowReports = new ArrayList<>();
-
-        //Validation with default loadflow parameters
-        LoadFlowParameters params = new LoadFlowParameters()
-                .setTransformerVoltageControlOn(true)
-                .setSimulShunt(true)
-                .setDistributedSlack(true)
-                .setBalanceType(LoadFlowParameters.BalanceType.PROPORTIONAL_TO_GENERATION_P_MAX)
-                .setReadSlackBus(true)
-                .setVoltageInitMode(LoadFlowParameters.VoltageInitMode.DC_VALUES);
-
-        LoadFlowCaseValidationReport report = loadFlowCaseValidationService.validate(network, params);
-        loadFlowReports.add(report);
-        if (report.isLoadFlowOk()) {
-            return new CaseValidationReport(loadFlowReports, true);
-        }
-
-        //Validation with relaxed loadflow parameters
-        params.setTransformerVoltageControlOn(false);
-        params.setSimulShunt(false);
-
-        report = loadFlowCaseValidationService.validate(network, params);
-        loadFlowReports.add(report);
-        return new CaseValidationReport(loadFlowReports, report.isLoadFlowOk());
+        List<LoadFlowCaseValidationReport> loadFlowReports = loadFlowCaseValidationService.validate(network);
+        return new CaseValidationReport(loadFlowReports, Iterables.getLast(loadFlowReports).isLoadFlowOk());
     }
 }
