@@ -44,7 +44,6 @@ public class LoadFlowService {
 
     public LoadFlowResult run(UUID networkUuid, LoadFlowParameters params) {
         UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromPath(DELIMITER + LOAD_FLOW_API_VERSION + "/networks/{networkUuid}/run");
-        uriBuilder = uriBuilder.queryParam("networkUuid", networkUuid.toString());
         String uri = uriBuilder.build().toUriString();
 
         return loadFlowServerRest.exchange(uri,
@@ -53,5 +52,6 @@ public class LoadFlowService {
                 LoadFlowResult.class,
                 networkUuid.toString(),
                 params).getBody();
+
     }
 }
