@@ -57,14 +57,18 @@ public class CaseValidationTest {
     }
 
     @Test(expected = NestedServletException.class)
-    public void test() throws Exception {
-        UUID testNetworkId = UUID.fromString("7928181c-7977-4592-ba19-88027e4254e4");
+    public void testUnfoundNetwork() throws Exception {
         UUID notFoundNetworkId = UUID.fromString("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa");
 
         // network not existing
         given(loadFlowService.run(eq(notFoundNetworkId), any())).willThrow(new PowsyblException());
         mvc.perform(put("/v1/networks/{networkUuid}/validate", notFoundNetworkId))
                 .andExpect(result -> assertTrue(result.getResolvedException() instanceof PowsyblException));
+    }
+
+    @Test
+    public void test() throws Exception {
+        UUID testNetworkId = UUID.fromString("7928181c-7977-4592-ba19-88027e4254e4");
 
         //Loadlow converges with default parameters
         ObjectMapper om = new ObjectMapper();
