@@ -52,6 +52,5 @@ public class LoadFlowService {
                 LoadFlowResult.class,
                 networkUuid.toString(),
                 params).getBody();
-
     }
 }
