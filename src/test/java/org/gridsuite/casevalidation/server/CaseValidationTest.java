@@ -72,7 +72,7 @@ public class CaseValidationTest {
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andReturn();
-        assertTrue(result.getResponse().getContentAsString().contains("status\":\"CONVERGED\""));
+        assertTrue(result.getResponse().getContentAsString().contains("loadFlowOk\":true"));
 
         // load flow with parameters
         LoadFlowParameters params = new LoadFlowParameters()
@@ -92,7 +92,7 @@ public class CaseValidationTest {
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andReturn();
-        assertTrue(result.getResponse().getContentAsString().contains("status\":\"CONVERGED\""));
+        assertTrue(result.getResponse().getContentAsString().contains("loadFlowOk\":true"));
     }
 
     public Network createNetwork() {
