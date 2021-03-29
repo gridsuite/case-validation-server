@@ -6,16 +6,14 @@
  */
 package org.gridsuite.casevalidation.server;
 
-import com.powsybl.iidm.network.Network;
-import com.powsybl.loadflow.LoadFlow;
 import com.powsybl.loadflow.LoadFlowParameters;
 import com.powsybl.loadflow.LoadFlowResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.UUID;
 
 /**
  * @author Etienne Homer <etienne.homer at rte-france.com>
@@ -24,9 +22,10 @@ import java.util.List;
 class LoadFlowCaseValidationService {
     private static final Logger LOGGER = LoggerFactory.getLogger(LoadFlowCaseValidationService.class);
 
-    List<LoadFlowCaseValidationReport> validate(Network network) {
-        List<LoadFlowCaseValidationReport> loadFlowReports = new ArrayList<>();
+    @Autowired
+    private LoadFlowService loadFlowService;
 
+    LoadFlowCaseValidationReport validate(UUID networkUuid) {
         //Validation with default loadflow parameters
         LoadFlowParameters params = new LoadFlowParameters()
                 .setTransformerVoltageControlOn(true)
@@ -35,29 +34,25 @@ class LoadFlowCaseValidationService {
                 .setBalanceType(LoadFlowParameters.BalanceType.PROPORTIONAL_TO_GENERATION_P_MAX)
                 .setReadSlackBus(true)
                 .setVoltageInitMode(LoadFlowParameters.VoltageInitMode.DC_VALUES);
-
-        LoadFlowCaseValidationReport report = validate(network, params);
-        loadFlowReports.add(report);
-        if (report.isLoadFlowOk()) {
-            return loadFlowReports;
+        if (validate(networkUuid, params)) {
+            return new LoadFlowCaseValidationReport(true, LoadFlowCaseValidationReport.Status.CONVERGED_ON_1ST_LF);
         }
 
         //Validation with relaxed loadflow parameters
         params.setTransformerVoltageControlOn(false);
         params.setSimulShunt(false);
 
-        report = validate(network, params);
-        loadFlowReports.add(report);
-        return loadFlowReports;
+        boolean isLoadFlowOk = validate(networkUuid, params);
+        return new LoadFlowCaseValidationReport(isLoadFlowOk, isLoadFlowOk ? LoadFlowCaseValidationReport.Status.CONVERGED_ON_2D_LF : LoadFlowCaseValidationReport.Status.FAILED);
     }
 
-    LoadFlowCaseValidationReport validate(Network network, LoadFlowParameters params) {
-        LoadFlowResult result = LoadFlow.run(network, params);
-        LOGGER.info("Loadflow validation for case {} with loadflow parameters : {}", network.getId(), params);
+    boolean validate(UUID networkUuid, LoadFlowParameters params) {
+        LoadFlowResult result = loadFlowService.run(networkUuid, params);
+        LOGGER.info("Loadflow validation for case {} with loadflow parameters : {}", networkUuid, params);
         boolean isLoadFlowOk = isMainComponentConverging(result);
         LOGGER.info("Loadflow status: {}", isLoadFlowOk ? "OK" : "KO");
         LOGGER.info("Loadflow metrics: {}", result.getMetrics());
-        return new LoadFlowCaseValidationReport(isLoadFlowOk, result.getComponentResults(), params);
+        return isLoadFlowOk;
     }
 
     boolean isMainComponentConverging(LoadFlowResult result) {

@@ -6,37 +6,31 @@
  */
 package org.gridsuite.casevalidation.server;
 
-import com.powsybl.loadflow.LoadFlowParameters;
-import com.powsybl.loadflow.LoadFlowResult;
-
-import java.util.List;
-
 /**
  * @author Etienne Homer <etienne.homer at rte-france.com>
  */
 public class LoadFlowCaseValidationReport {
 
-    private boolean loadFlowOk;
+    private boolean ok;
 
-    private List<LoadFlowResult.ComponentResult> componentResults;
+    private Status status;
 
-    private LoadFlowParameters loadFlowParameters;
-
-    public LoadFlowCaseValidationReport(boolean loadFlowOk, List<LoadFlowResult.ComponentResult> componentResults, LoadFlowParameters loadFlowParameters) {
-        this.loadFlowOk = loadFlowOk;
-        this.componentResults = componentResults;
-        this.loadFlowParameters = loadFlowParameters;
+    public LoadFlowCaseValidationReport(boolean ok, Status status) {
+        this.ok = ok;
+        this.status = status;
     }
 
-    public boolean isLoadFlowOk() {
-        return loadFlowOk;
+    public boolean isOk() {
+        return ok;
     }
 
-    public List<LoadFlowResult.ComponentResult> getComponentResults() {
-        return componentResults;
+    public Status getStatus() {
+        return status;
     }
 
-    public LoadFlowParameters getLoadFlowParameters() {
-        return loadFlowParameters;
+    public enum Status {
+        CONVERGED_ON_1ST_LF,
+        CONVERGED_ON_2D_LF,
+        FAILED;
     }
 }

@@ -6,24 +6,22 @@
  */
 package org.gridsuite.casevalidation.server;
 
-import java.util.List;
-
 /**
  * @author Etienne Homer <etienne.homer at rte-france.com>
  */
 public class CaseValidationReport {
 
-    private List<LoadFlowCaseValidationReport> loadFlowReports;
+    private LoadFlowCaseValidationReport loadFlowReport;
 
     private boolean validationOk;
 
-    public CaseValidationReport(List<LoadFlowCaseValidationReport> loadFlowReports, boolean validationOk) {
-        this.loadFlowReports = loadFlowReports;
+    public CaseValidationReport(LoadFlowCaseValidationReport loadFlowReport, boolean validationOk) {
+        this.loadFlowReport = loadFlowReport;
         this.validationOk = validationOk;
     }
 
-    public List<LoadFlowCaseValidationReport> getLoadFlowReports() {
-        return loadFlowReports;
+    public LoadFlowCaseValidationReport getLoadFlowReport() {
+        return loadFlowReport;
     }
 
     public boolean isValidationOk() {
