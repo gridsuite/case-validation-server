@@ -1,7 +1,4 @@
 /**
-=======
-package org.gridsuite.casevalidation.server; /**
->>>>>>> master
  * Copyright (c) 2020, RTE (http://www.rte-france.com)
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -9,27 +6,26 @@ package org.gridsuite.casevalidation.server; /**
  */
 package org.gridsuite.casevalidation.server;
 
-import java.util.Map;
-
 /**
  * @author Etienne Homer <etienne.homer at rte-france.com>
  */
 public class CaseValidationReport {
 
-    private Map<String, String> metrics;
+    private LoadFlowCaseValidationReport loadFlowReport;
 
-    private boolean loadFlowOk;
+    private boolean validationOk;
 
-    public CaseValidationReport(Map<String, String> metrics, boolean loadFlowOk) {
-        this.metrics = metrics;
-        this.loadFlowOk = loadFlowOk;
+    public CaseValidationReport(LoadFlowCaseValidationReport loadFlowReport, boolean validationOk) {
+        this.loadFlowReport = loadFlowReport;
+        this.validationOk = validationOk;
     }
 
-    public Map<String, String> getMetrics() {
-        return metrics;
+    public LoadFlowCaseValidationReport getLoadFlowReport() {
+        return loadFlowReport;
     }
 
-    public boolean isLoadFlowOk() {
-        return loadFlowOk;
+    public boolean isValidationOk() {
+        return validationOk;
     }
 }
+
