@@ -35,7 +35,7 @@ class LoadFlowCaseValidationService {
                 .setReadSlackBus(true)
                 .setVoltageInitMode(LoadFlowParameters.VoltageInitMode.DC_VALUES);
         if (validate(networkUuid, params)) {
-            return new LoadFlowCaseValidationReport(true, LoadFlowCaseValidationReport.Status.CONVERGED_ON_1ST_LF);
+            return new LoadFlowCaseValidationReport(LoadFlowCaseValidationReport.Status.CONVERGED_ON_1ST_LF);
         }
 
         //Validation with relaxed loadflow parameters
@@ -43,15 +43,14 @@ class LoadFlowCaseValidationService {
         params.setSimulShunt(false);
 
         boolean isLoadFlowOk = validate(networkUuid, params);
-        return new LoadFlowCaseValidationReport(isLoadFlowOk, isLoadFlowOk ? LoadFlowCaseValidationReport.Status.CONVERGED_ON_2D_LF : LoadFlowCaseValidationReport.Status.FAILED);
+        return new LoadFlowCaseValidationReport(isLoadFlowOk ? LoadFlowCaseValidationReport.Status.CONVERGED_ON_2D_LF : LoadFlowCaseValidationReport.Status.FAILED);
     }
 
     boolean validate(UUID networkUuid, LoadFlowParameters params) {
         LoadFlowResult result = loadFlowService.run(networkUuid, params);
         LOGGER.info("Loadflow validation for case {} with loadflow parameters : {}", networkUuid, params);
         boolean isLoadFlowOk = isMainComponentConverging(result);
-        LOGGER.info("Loadflow status: {}", isLoadFlowOk ? "OK" : "KO");
-        LOGGER.info("Loadflow metrics: {}", result.getMetrics());
+        LOGGER.info("Loadflow status: {}", isLoadFlowOk ? "Converged" : "Failed");
         return isLoadFlowOk;
     }
 

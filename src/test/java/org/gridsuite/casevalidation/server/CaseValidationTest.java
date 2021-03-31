@@ -6,8 +6,6 @@
  */
 package org.gridsuite.casevalidation.server;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.powsybl.commons.PowsyblException;
 import com.powsybl.loadflow.LoadFlowResult;
 import com.powsybl.loadflow.LoadFlowResultImpl;
@@ -34,9 +32,11 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.BDDMockito.given;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.hamcrest.Matchers.*;
 
 /**
  * @author Etienne Homer <etienne.homer at rte-france.com>
@@ -71,18 +71,15 @@ public class CaseValidationTest {
         UUID testNetworkId = UUID.fromString("7928181c-7977-4592-ba19-88027e4254e4");
 
         //Loadlow converges with default parameters
-        ObjectMapper om = new ObjectMapper();
-
         List<LoadFlowResult.ComponentResult> componentResults = Collections.singletonList(new LoadFlowResultImpl.ComponentResultImpl(0, LoadFlowResult.ComponentResult.Status.CONVERGED, 5, "slackBusId", 0));
         given(loadFlowService.run(eq(testNetworkId), argThat(params -> params.isTransformerVoltageControlOn()))).willReturn(new LoadFlowResultImpl(true, Collections.emptyMap(), null, componentResults));
 
         MvcResult result = mvc.perform(put("/v1/networks/{networkUuid}/validate", testNetworkId))
-                .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.validationOk", is(true)))
+                .andExpect(jsonPath("$.loadFlowReport", hasEntry("status", "CONVERGED_ON_1ST_LF")))
                 .andReturn();
-        JsonNode validationOk = om.readTree(result.getResponse().getContentAsString()).path("validationOk");
-        assertTrue(result.getResponse().getContentAsString().contains("CONVERGED_ON_1ST_LF"));
-        assertTrue(validationOk.asBoolean());
 
         //Loadlow diverges with default parameters and converges with relaxed ones
         //Validation with default loadflow parameters
@@ -93,24 +90,20 @@ public class CaseValidationTest {
         componentResults = Collections.singletonList(new LoadFlowResultImpl.ComponentResultImpl(0, LoadFlowResult.ComponentResult.Status.CONVERGED, 5, "slackBusId", 0));
         given(loadFlowService.run(eq(testNetworkId), argThat(params -> !params.isTransformerVoltageControlOn()))).willReturn(new LoadFlowResultImpl(true, Collections.emptyMap(), null, componentResults));
         result = mvc.perform(put("/v1/networks/{networkUuid}/validate", testNetworkId))
-                .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.validationOk", is(true)))
+                .andExpect(jsonPath("$.loadFlowReport", hasEntry("status", "CONVERGED_ON_2D_LF")))
                 .andReturn();
-
-        validationOk = om.readTree(result.getResponse().getContentAsString()).path("validationOk");
-        assertTrue(result.getResponse().getContentAsString().contains("CONVERGED_ON_2D_LF"));
-        assertTrue(validationOk.asBoolean());
 
         //Loadflow diverges with both default and relaxed parameters
         componentResults = Collections.singletonList(new LoadFlowResultImpl.ComponentResultImpl(0, LoadFlowResult.ComponentResult.Status.MAX_ITERATION_REACHED, 5, "slackBusId", 0));
         given(loadFlowService.run(eq(testNetworkId), any())).willReturn(new LoadFlowResultImpl(true, Collections.emptyMap(), null, componentResults));
         result = mvc.perform(put("/v1/networks/{networkUuid}/validate", testNetworkId))
-                .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.validationOk", is(false)))
+                .andExpect(jsonPath("$.loadFlowReport", hasEntry("status", "FAILED")))
                 .andReturn();
-
-        validationOk = om.readTree(result.getResponse().getContentAsString()).path("validationOk");
-        assertTrue(result.getResponse().getContentAsString().contains("FAILED"));
-        assertFalse(validationOk.asBoolean());
     }
 }

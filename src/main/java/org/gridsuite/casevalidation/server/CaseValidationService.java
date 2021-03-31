@@ -26,6 +26,6 @@ class CaseValidationService {
 
     CaseValidationReport validate(UUID networkUuid) {
         LoadFlowCaseValidationReport loadFlowReport = loadFlowCaseValidationService.validate(networkUuid);
-        return new CaseValidationReport(loadFlowReport, loadFlowReport.isOk());
+        return new CaseValidationReport(loadFlowReport, loadFlowReport.getStatus() != LoadFlowCaseValidationReport.Status.FAILED);
     }
 }

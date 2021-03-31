@@ -11,17 +11,10 @@ package org.gridsuite.casevalidation.server;
  */
 public class LoadFlowCaseValidationReport {
 
-    private boolean ok;
-
     private Status status;
 
-    public LoadFlowCaseValidationReport(boolean ok, Status status) {
-        this.ok = ok;
+    public LoadFlowCaseValidationReport(Status status) {
         this.status = status;
-    }
-
-    public boolean isOk() {
-        return ok;
     }
 
     public Status getStatus() {

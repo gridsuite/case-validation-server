@@ -39,8 +39,6 @@ public class LoadFlowServiceTest {
 
     private LoadFlowService loadFlowService;
 
-    private UUID randomUuid1 = UUID.randomUUID();
-
     @Before
     public void setUp() {
         loadFlowService = new LoadFlowService(loadFlowServerRest);
@@ -48,16 +46,17 @@ public class LoadFlowServiceTest {
 
     @Test
     public void test() {
+        UUID testNetworkId = UUID.fromString("7928181c-7977-4592-ba19-88027e4254e4");
         List<LoadFlowResult.ComponentResult> componentResults = Collections.singletonList(new LoadFlowResultImpl.ComponentResultImpl(0, LoadFlowResult.ComponentResult.Status.CONVERGED, 5, "slackBusId", 0));
         LoadFlowParameters parameters = new LoadFlowParameters();
         when(loadFlowServerRest.exchange(anyString(),
                 eq(HttpMethod.PUT),
                 any(),
                 eq(LoadFlowResult.class),
-                eq(randomUuid1.toString()),
+                eq(testNetworkId.toString()),
                 eq(parameters)))
                 .thenReturn(ResponseEntity.ok(new LoadFlowResultImpl(true, Collections.emptyMap(), null, componentResults)));
-        LoadFlowResult res = loadFlowService.run(randomUuid1, parameters);
+        LoadFlowResult res = loadFlowService.run(testNetworkId, parameters);
         assertTrue(res.isOk());
     }
 }
