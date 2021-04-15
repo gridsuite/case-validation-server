@@ -8,12 +8,12 @@ package org.gridsuite.casevalidation.server;
 
 import io.swagger.annotations.*;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.inject.Inject;
 import java.util.UUID;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
@@ -27,7 +27,7 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 @ComponentScan(basePackageClasses = CaseValidationService.class)
 public class CaseValidationController {
 
-    @Inject
+    @Autowired
     private CaseValidationService caseValidationService;
 
     @PutMapping(value = "/networks/{networkUuid}/validate", produces = APPLICATION_JSON_VALUE)
