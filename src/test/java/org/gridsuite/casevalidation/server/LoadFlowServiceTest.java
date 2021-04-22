@@ -53,8 +53,8 @@ public class LoadFlowServiceTest {
                 eq(HttpMethod.PUT),
                 any(),
                 eq(LoadFlowResult.class),
-                eq(testNetworkId.toString()),
-                eq(parameters)))
+                eq(testNetworkId.toString())
+                ))
                 .thenReturn(ResponseEntity.ok(new LoadFlowResultImpl(true, Collections.emptyMap(), null, componentResults)));
         LoadFlowResult res = loadFlowService.run(testNetworkId, parameters);
         assertTrue(res.isOk());
