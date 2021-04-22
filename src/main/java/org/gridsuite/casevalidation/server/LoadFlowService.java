@@ -8,15 +8,17 @@ package org.gridsuite.casevalidation.server;
 
 import com.powsybl.loadflow.LoadFlowParameters;
 import com.powsybl.loadflow.LoadFlowResult;
+import com.powsybl.loadflow.json.JsonLoadFlowParameters;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
-import org.springframework.http.HttpMethod;
+import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.DefaultUriBuilderFactory;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import java.io.ByteArrayOutputStream;
 import java.util.UUID;
 
 /**
@@ -46,11 +48,17 @@ public class LoadFlowService {
         UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromPath(DELIMITER + LOAD_FLOW_API_VERSION + "/networks/{networkUuid}/run");
         String uri = uriBuilder.build().toUriString();
 
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        JsonLoadFlowParameters.write(params, baos);
+        HttpEntity<byte[]> requestEntity = new HttpEntity<>(baos.toByteArray(), headers);
+
         return loadFlowServerRest.exchange(uri,
                 HttpMethod.PUT,
-                null,
+                requestEntity,
                 LoadFlowResult.class,
-                networkUuid.toString(),
-                params).getBody();
+                networkUuid.toString()
+                ).getBody();
     }
 }
