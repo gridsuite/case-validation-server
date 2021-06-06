@@ -71,7 +71,7 @@ public class CaseValidationTest {
         UUID testNetworkId = UUID.fromString("7928181c-7977-4592-ba19-88027e4254e4");
 
         //Loadlow converges with default parameters
-        List<LoadFlowResult.ComponentResult> componentResults = Collections.singletonList(new LoadFlowResultImpl.ComponentResultImpl(0, LoadFlowResult.ComponentResult.Status.CONVERGED, 5, "slackBusId", 0));
+        List<LoadFlowResult.ComponentResult> componentResults = Collections.singletonList(new LoadFlowResultImpl.ComponentResultImpl(0, 0, LoadFlowResult.ComponentResult.Status.CONVERGED, 5, "slackBusId", 0));
         given(loadFlowService.run(eq(testNetworkId), argThat(params -> params.isTransformerVoltageControlOn()))).willReturn(new LoadFlowResultImpl(true, Collections.emptyMap(), null, componentResults));
 
         MvcResult result = mvc.perform(put("/v1/networks/{networkUuid}/validate", testNetworkId))
@@ -83,11 +83,11 @@ public class CaseValidationTest {
 
         //Loadlow diverges with default parameters and converges with relaxed ones
         //Validation with default loadflow parameters
-        componentResults = Collections.singletonList(new LoadFlowResultImpl.ComponentResultImpl(0, LoadFlowResult.ComponentResult.Status.MAX_ITERATION_REACHED, 5, "slackBusId", 0));
+        componentResults = Collections.singletonList(new LoadFlowResultImpl.ComponentResultImpl(0, 0, LoadFlowResult.ComponentResult.Status.MAX_ITERATION_REACHED, 5, "slackBusId", 0));
         given(loadFlowService.run(eq(testNetworkId), argThat(params -> params.isTransformerVoltageControlOn()))).willReturn(new LoadFlowResultImpl(true, Collections.emptyMap(), null, componentResults));
 
         //Validation with relaxed loadflow parameters
-        componentResults = Collections.singletonList(new LoadFlowResultImpl.ComponentResultImpl(0, LoadFlowResult.ComponentResult.Status.CONVERGED, 5, "slackBusId", 0));
+        componentResults = Collections.singletonList(new LoadFlowResultImpl.ComponentResultImpl(0, 0, LoadFlowResult.ComponentResult.Status.CONVERGED, 5, "slackBusId", 0));
         given(loadFlowService.run(eq(testNetworkId), argThat(params -> !params.isTransformerVoltageControlOn()))).willReturn(new LoadFlowResultImpl(true, Collections.emptyMap(), null, componentResults));
         result = mvc.perform(put("/v1/networks/{networkUuid}/validate", testNetworkId))
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
@@ -97,7 +97,7 @@ public class CaseValidationTest {
                 .andReturn();
 
         //Loadflow diverges with both default and relaxed parameters
-        componentResults = Collections.singletonList(new LoadFlowResultImpl.ComponentResultImpl(0, LoadFlowResult.ComponentResult.Status.MAX_ITERATION_REACHED, 5, "slackBusId", 0));
+        componentResults = Collections.singletonList(new LoadFlowResultImpl.ComponentResultImpl(0, 0, LoadFlowResult.ComponentResult.Status.MAX_ITERATION_REACHED, 5, "slackBusId", 0));
         given(loadFlowService.run(eq(testNetworkId), any())).willReturn(new LoadFlowResultImpl(true, Collections.emptyMap(), null, componentResults));
         result = mvc.perform(put("/v1/networks/{networkUuid}/validate", testNetworkId))
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
