@@ -59,9 +59,10 @@ public class CaseValidationTest {
     @Test(expected = NestedServletException.class)
     public void testUnfoundNetwork() throws Exception {
         UUID notFoundNetworkId = UUID.fromString("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa");
+        UUID reportId = UUID.fromString("12345679-9876-6543-1478-123698745698");
 
         // network not existing
-        given(loadFlowService.run(eq(notFoundNetworkId), any())).willThrow(new PowsyblException());
+        given(loadFlowService.run(eq(notFoundNetworkId), any(), any(), any())).willThrow(new PowsyblException());
         mvc.perform(put("/v1/networks/{networkUuid}/validate", notFoundNetworkId))
                 .andExpect(result -> assertTrue(result.getResolvedException() instanceof PowsyblException));
     }
@@ -69,10 +70,11 @@ public class CaseValidationTest {
     @Test
     public void test() throws Exception {
         UUID testNetworkId = UUID.fromString("7928181c-7977-4592-ba19-88027e4254e4");
+        UUID reportId = UUID.fromString("12345679-9876-6543-1478-123698745698");
 
         //Loadlow converges with default parameters
         List<LoadFlowResult.ComponentResult> componentResults = Collections.singletonList(new LoadFlowResultImpl.ComponentResultImpl(0, 0, LoadFlowResult.ComponentResult.Status.CONVERGED, 5, "slackBusId", 0));
-        given(loadFlowService.run(eq(testNetworkId), argThat(params -> params.isTransformerVoltageControlOn()))).willReturn(new LoadFlowResultImpl(true, Collections.emptyMap(), null, componentResults));
+        given(loadFlowService.run(eq(testNetworkId), argThat(params -> params.isTransformerVoltageControlOn()), any(), any())).willReturn(new LoadFlowResultImpl(true, Collections.emptyMap(), null, componentResults));
 
         MvcResult result = mvc.perform(put("/v1/networks/{networkUuid}/validate", testNetworkId))
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
@@ -84,11 +86,11 @@ public class CaseValidationTest {
         //Loadlow diverges with default parameters and converges with relaxed ones
         //Validation with default loadflow parameters
         componentResults = Collections.singletonList(new LoadFlowResultImpl.ComponentResultImpl(0, 0, LoadFlowResult.ComponentResult.Status.MAX_ITERATION_REACHED, 5, "slackBusId", 0));
-        given(loadFlowService.run(eq(testNetworkId), argThat(params -> params.isTransformerVoltageControlOn()))).willReturn(new LoadFlowResultImpl(true, Collections.emptyMap(), null, componentResults));
+        given(loadFlowService.run(eq(testNetworkId), argThat(params -> params.isTransformerVoltageControlOn()), any(), any())).willReturn(new LoadFlowResultImpl(true, Collections.emptyMap(), null, componentResults));
 
         //Validation with relaxed loadflow parameters
         componentResults = Collections.singletonList(new LoadFlowResultImpl.ComponentResultImpl(0, 0, LoadFlowResult.ComponentResult.Status.CONVERGED, 5, "slackBusId", 0));
-        given(loadFlowService.run(eq(testNetworkId), argThat(params -> !params.isTransformerVoltageControlOn()))).willReturn(new LoadFlowResultImpl(true, Collections.emptyMap(), null, componentResults));
+        given(loadFlowService.run(eq(testNetworkId), argThat(params -> !params.isTransformerVoltageControlOn()), any(), any())).willReturn(new LoadFlowResultImpl(true, Collections.emptyMap(), null, componentResults));
         result = mvc.perform(put("/v1/networks/{networkUuid}/validate", testNetworkId))
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
@@ -98,7 +100,7 @@ public class CaseValidationTest {
 
         //Loadflow diverges with both default and relaxed parameters
         componentResults = Collections.singletonList(new LoadFlowResultImpl.ComponentResultImpl(0, 0, LoadFlowResult.ComponentResult.Status.MAX_ITERATION_REACHED, 5, "slackBusId", 0));
-        given(loadFlowService.run(eq(testNetworkId), any())).willReturn(new LoadFlowResultImpl(true, Collections.emptyMap(), null, componentResults));
+        given(loadFlowService.run(eq(testNetworkId), any(), any(), any())).willReturn(new LoadFlowResultImpl(true, Collections.emptyMap(), null, componentResults));
         result = mvc.perform(put("/v1/networks/{networkUuid}/validate", testNetworkId))
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())

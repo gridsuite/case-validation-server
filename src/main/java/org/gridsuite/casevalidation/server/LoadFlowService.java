@@ -44,8 +44,9 @@ public class LoadFlowService {
         this.loadFlowServerRest = restTemplate;
     }
 
-    public LoadFlowResult run(UUID networkUuid, LoadFlowParameters params) {
-        UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromPath(DELIMITER + LOAD_FLOW_API_VERSION + "/networks/{networkUuid}/run");
+    public LoadFlowResult run(UUID networkUuid, LoadFlowParameters params, UUID reportUuid, String reportName) {
+        UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromPath(DELIMITER + LOAD_FLOW_API_VERSION + "/networks/{networkUuid}/run")
+            .queryParam("reportId", reportUuid).queryParam("reportName", reportName).queryParam("overwrite", false);
         String uri = uriBuilder.build().toUriString();
 
         HttpHeaders headers = new HttpHeaders();
