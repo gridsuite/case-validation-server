@@ -59,7 +59,6 @@ public class CaseValidationTest {
     @Test(expected = NestedServletException.class)
     public void testUnfoundNetwork() throws Exception {
         UUID notFoundNetworkId = UUID.fromString("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa");
-        UUID reportId = UUID.fromString("12345679-9876-6543-1478-123698745698");
 
         // network not existing
         given(loadFlowService.run(eq(notFoundNetworkId), any(), any(), any())).willThrow(new PowsyblException());
@@ -107,5 +106,14 @@ public class CaseValidationTest {
                 .andExpect(jsonPath("$.validationOk", is(false)))
                 .andExpect(jsonPath("$.loadFlowReport", hasEntry("status", "FAILED")))
                 .andReturn();
+
+        given(loadFlowService.run(eq(testNetworkId), any(), any(), any())).willReturn(new LoadFlowResultImpl(true, Collections.emptyMap(), null, componentResults));
+        result = mvc.perform(put("/v1/networks/{networkUuid}/validate?reportId={reportId}&reportName={name}", testNetworkId, reportId, "testReportName"))
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.validationOk", is(false)))
+            .andExpect(jsonPath("$.loadFlowReport", hasEntry("status", "FAILED")))
+            .andReturn();
+
     }
 }
