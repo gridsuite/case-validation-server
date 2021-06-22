@@ -34,7 +34,7 @@ public class CaseValidationController {
     @ApiOperation(value = "check case validity", produces = APPLICATION_JSON_VALUE)
     @ApiResponses(value = {@ApiResponse(code = 200, message = "Network has been checked")})
     public ResponseEntity<CaseValidationReport> validate(@ApiParam(value = "Network UUID") @PathVariable("networkUuid") UUID networkUuid,
-                                                         @ApiParam(value = "Report UUID") @RequestParam(value = "reportUuid", required = false) UUID reportUuid) {
+                                                         @ApiParam(value = "Report UUID") @RequestParam(value = "reportId", required = false) UUID reportUuid) {
         return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(caseValidationService.validate(networkUuid, reportUuid));
     }
 }

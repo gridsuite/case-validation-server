@@ -108,7 +108,7 @@ public class CaseValidationTest {
                 .andReturn();
 
         given(loadFlowService.run(eq(testNetworkId), any(), any(), any())).willReturn(new LoadFlowResultImpl(true, Collections.emptyMap(), null, componentResults));
-        result = mvc.perform(put("/v1/networks/{networkUuid}/validate?reportId={reportId}&reportName={name}", testNetworkId, reportId, "testReportName"))
+        result = mvc.perform(put("/v1/networks/{networkUuid}/validate?reportId={reportId}", testNetworkId, reportId))
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.validationOk", is(false)))
