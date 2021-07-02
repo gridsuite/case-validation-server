@@ -25,7 +25,7 @@ class LoadFlowCaseValidationService {
     @Autowired
     private LoadFlowService loadFlowService;
 
-    LoadFlowCaseValidationReport validate(UUID networkUuid) {
+    LoadFlowCaseValidationReport validate(UUID networkUuid, UUID reportUuid) {
         //Validation with default loadflow parameters
         LoadFlowParameters params = new LoadFlowParameters()
                 .setTransformerVoltageControlOn(true)
@@ -34,7 +34,7 @@ class LoadFlowCaseValidationService {
                 .setBalanceType(LoadFlowParameters.BalanceType.PROPORTIONAL_TO_GENERATION_P_MAX)
                 .setReadSlackBus(true)
                 .setVoltageInitMode(LoadFlowParameters.VoltageInitMode.DC_VALUES);
-        if (validate(networkUuid, params)) {
+        if (validate(networkUuid, params, reportUuid, "loadflowDefaultParameters")) {
             return new LoadFlowCaseValidationReport(LoadFlowCaseValidationReport.Status.CONVERGED_ON_1ST_LF);
         }
 
@@ -42,12 +42,12 @@ class LoadFlowCaseValidationService {
         params.setTransformerVoltageControlOn(false);
         params.setSimulShunt(false);
 
-        boolean isLoadFlowOk = validate(networkUuid, params);
+        boolean isLoadFlowOk = validate(networkUuid, params, reportUuid, "relaxedLoadflow");
         return new LoadFlowCaseValidationReport(isLoadFlowOk ? LoadFlowCaseValidationReport.Status.CONVERGED_ON_2D_LF : LoadFlowCaseValidationReport.Status.FAILED);
     }
 
-    boolean validate(UUID networkUuid, LoadFlowParameters params) {
-        LoadFlowResult result = loadFlowService.run(networkUuid, params);
+    boolean validate(UUID networkUuid, LoadFlowParameters params, UUID reportUuid, String reportName) {
+        LoadFlowResult result = loadFlowService.run(networkUuid, params, reportUuid, reportName);
         LOGGER.info("Loadflow validation for case {} with loadflow parameters : {}", networkUuid, params);
         boolean isLoadFlowOk = isMainComponentConverging(result);
         LOGGER.info("Loadflow status: {}", isLoadFlowOk ? "Converged" : "Failed");

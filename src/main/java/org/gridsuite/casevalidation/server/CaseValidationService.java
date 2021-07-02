@@ -24,8 +24,8 @@ class CaseValidationService {
         this.loadFlowCaseValidationService = loadFlowCaseValidationService;
     }
 
-    CaseValidationReport validate(UUID networkUuid) {
-        LoadFlowCaseValidationReport loadFlowReport = loadFlowCaseValidationService.validate(networkUuid);
+    CaseValidationReport validate(UUID networkUuid, UUID reportUuid) {
+        LoadFlowCaseValidationReport loadFlowReport = loadFlowCaseValidationService.validate(networkUuid, reportUuid);
         return new CaseValidationReport(loadFlowReport, loadFlowReport.getStatus() != LoadFlowCaseValidationReport.Status.FAILED);
     }
 }

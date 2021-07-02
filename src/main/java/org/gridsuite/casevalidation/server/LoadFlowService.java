@@ -36,7 +36,7 @@ public class LoadFlowService {
     public LoadFlowService(RestTemplateBuilder builder,
                            @Value("${backing-services.loadflow-server.base-uri:http://loadflow-server/}") String loadFlowBaseUri) {
         this.loadFlowServerRest = builder.uriTemplateHandler(
-                new DefaultUriBuilderFactory(loadFlowBaseUri)
+            new DefaultUriBuilderFactory(loadFlowBaseUri)
         ).build();
     }
 
@@ -44,8 +44,11 @@ public class LoadFlowService {
         this.loadFlowServerRest = restTemplate;
     }
 
-    public LoadFlowResult run(UUID networkUuid, LoadFlowParameters params) {
+    public LoadFlowResult run(UUID networkUuid, LoadFlowParameters params, UUID reportUuid, String reportName) {
         UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromPath(DELIMITER + LOAD_FLOW_API_VERSION + "/networks/{networkUuid}/run");
+        if (reportUuid != null && reportName != null) {
+            uriBuilder.queryParam("reportId", reportUuid).queryParam("reportName", reportName).queryParam("overwrite", true);
+        }
         String uri = uriBuilder.build().toUriString();
 
         HttpHeaders headers = new HttpHeaders();
@@ -55,10 +58,10 @@ public class LoadFlowService {
         HttpEntity<byte[]> requestEntity = new HttpEntity<>(baos.toByteArray(), headers);
 
         return loadFlowServerRest.exchange(uri,
-                HttpMethod.PUT,
-                requestEntity,
-                LoadFlowResult.class,
-                networkUuid.toString()
+            HttpMethod.PUT,
+            requestEntity,
+            LoadFlowResult.class,
+            networkUuid.toString()
         ).getBody();
     }
 }
