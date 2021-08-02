@@ -2,10 +2,6 @@ spring:
   application:
     name: case-validation-server
 
-springdoc:
-  swagger-ui:
-    path: swagger-ui.html
-
 server:
   port: 5011
   forward-headers-strategy: framework
