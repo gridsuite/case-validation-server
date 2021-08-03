@@ -6,8 +6,11 @@
  */
 package org.gridsuite.casevalidation.server;
 
-import io.swagger.annotations.*;
-
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.http.MediaType;
@@ -23,7 +26,7 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
  */
 @RestController
 @RequestMapping(value = "/" + CaseValidationApi.API_VERSION + "/")
-@Api(tags = "case-validation-server")
+@Tag(name = "case-validation-server")
 @ComponentScan(basePackageClasses = CaseValidationService.class)
 public class CaseValidationController {
 
@@ -31,10 +34,10 @@ public class CaseValidationController {
     private CaseValidationService caseValidationService;
 
     @PutMapping(value = "/networks/{networkUuid}/validate", produces = APPLICATION_JSON_VALUE)
-    @ApiOperation(value = "check case validity", produces = APPLICATION_JSON_VALUE)
-    @ApiResponses(value = {@ApiResponse(code = 200, message = "Network has been checked")})
-    public ResponseEntity<CaseValidationReport> validate(@ApiParam(value = "Network UUID") @PathVariable("networkUuid") UUID networkUuid,
-                                                         @ApiParam(value = "Report UUID") @RequestParam(value = "reportId", required = false) UUID reportUuid) {
+    @Operation(summary = "check case validity")
+    @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "Network has been checked")})
+    public ResponseEntity<CaseValidationReport> validate(@Parameter(description = "Network UUID") @PathVariable("networkUuid") UUID networkUuid,
+                                                         @Parameter(description = "Report UUID") @RequestParam(value = "reportId", required = false) UUID reportUuid) {
         return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(caseValidationService.validate(networkUuid, reportUuid));
     }
 }
