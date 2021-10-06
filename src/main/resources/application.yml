@@ -1,14 +1,9 @@
 spring:
+  profiles:
+    active: default,local
+
   application:
     name: case-validation-server
 
 server:
-  port: 5011
   forward-headers-strategy: framework
-
-network-store-server:
-  base-uri: http://localhost:8080
-
-backing-services:
-  loadflow-server:
-    base-uri: http://localhost:5008
