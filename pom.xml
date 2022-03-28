@@ -15,7 +15,7 @@
     <parent>
         <groupId>com.powsybl</groupId>
         <artifactId>powsybl-parent-ws</artifactId>
-        <version>7</version>
+        <version>8-SNAPSHOT</version>
         <relativePath/>
     </parent>
 
@@ -46,7 +46,9 @@
     <properties>
         <java.version>11</java.version>
 
-        <gridsuite-dependencies.version>14</gridsuite-dependencies.version>
+        <gridsuite-dependencies.version>16-SNAPSHOT</gridsuite-dependencies.version>
+        <jackson-databind.version>2.13.1</jackson-databind.version>
+        <jackson.version>2.13.1</jackson.version>
     </properties>
 
     <build>
@@ -117,6 +119,18 @@
         <dependency>
             <groupId>org.springdoc</groupId>
             <artifactId>springdoc-openapi-ui</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-annotations</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-core</artifactId>
         </dependency>
 
         <!-- Runtime dependencies -->
