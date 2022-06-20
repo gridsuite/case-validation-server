@@ -48,7 +48,7 @@ public class LoadFlowServiceTest {
     public void test() {
         UUID testNetworkId = UUID.fromString("7928181c-7977-4592-ba19-88027e4254e4");
         UUID reportUuid = UUID.fromString("12345679-9876-6543-1478-123698745698");
-        List<LoadFlowResult.ComponentResult> componentResults = Collections.singletonList(new LoadFlowResultImpl.ComponentResultImpl(0, 0, LoadFlowResult.ComponentResult.Status.CONVERGED, 5, "slackBusId", 0));
+        List<LoadFlowResult.ComponentResult> componentResults = Collections.singletonList(new LoadFlowResultImpl.ComponentResultImpl(0, 0, LoadFlowResult.ComponentResult.Status.CONVERGED, 5, "slackBusId", 0, 0));
         LoadFlowParameters parameters = new LoadFlowParameters();
         when(loadFlowServerRest.exchange(anyString(),
                 eq(HttpMethod.PUT),
