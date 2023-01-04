@@ -1,8 +1,12 @@
 server:
   port: 5011
 
-backing-services:
-  loadflow-server:
-    base-uri: http://localhost:5008
-  network-store-server:
-    base-uri: http://localhost:8080
+powsybl:
+  services:
+    network-store-server:
+      base-uri: http://localhost:8080
+
+gridsuite:
+  services:
+    loadflow-server:
+      base-uri: http://localhost:5008
