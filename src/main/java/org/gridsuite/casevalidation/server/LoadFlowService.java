@@ -34,7 +34,7 @@ public class LoadFlowService {
 
     @Autowired
     public LoadFlowService(RestTemplateBuilder builder,
-                           @Value("${backing-services.loadflow-server.base-uri:http://loadflow-server/}") String loadFlowBaseUri) {
+                           @Value("${gridsuite.services.loadflow-server.base-uri:http://loadflow-server/}") String loadFlowBaseUri) {
         this.loadFlowServerRest = builder.uriTemplateHandler(
             new DefaultUriBuilderFactory(loadFlowBaseUri)
         ).build();
