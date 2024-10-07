@@ -9,11 +9,11 @@ package org.gridsuite.casevalidation.server;
 import com.powsybl.loadflow.LoadFlowParameters;
 import com.powsybl.loadflow.LoadFlowResult;
 import com.powsybl.loadflow.LoadFlowResultImpl;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
@@ -22,30 +22,28 @@ import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
-import static org.junit.Assert.assertTrue;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.ArgumentMatchers.eq;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.when;
 
 /**
  * @author Etienne Homer <etienne.homer at rte-france.com>
  */
-@RunWith(MockitoJUnitRunner.class)
-public class LoadFlowServiceTest {
+@ExtendWith(MockitoExtension.class)
+class LoadFlowServiceTest {
 
     @Mock
     private RestTemplate loadFlowServerRest;
 
     private LoadFlowService loadFlowService;
 
-    @Before
-    public void setUp() {
+    @BeforeEach
+    void setUp() {
         loadFlowService = new LoadFlowService(loadFlowServerRest);
     }
 
     @Test
-    public void test() {
+    void test() {
         UUID testNetworkId = UUID.fromString("7928181c-7977-4592-ba19-88027e4254e4");
         UUID reportUuid = UUID.fromString("12345679-9876-6543-1478-123698745698");
         List<LoadFlowResult.ComponentResult> componentResults = Collections.singletonList(new LoadFlowResultImpl.ComponentResultImpl(0, 0, LoadFlowResult.ComponentResult.Status.CONVERGED, 5, "slackBusId", 0, 0));

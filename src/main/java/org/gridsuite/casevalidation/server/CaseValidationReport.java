@@ -28,4 +28,3 @@ public class CaseValidationReport {
         return validationOk;
     }
 }
-
