@@ -10,16 +10,14 @@ import com.powsybl.commons.PowsyblException;
 import com.powsybl.loadflow.LoadFlowResult;
 import com.powsybl.loadflow.LoadFlowResultImpl;
 import jakarta.servlet.ServletException;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
@@ -27,47 +25,46 @@ import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
-import static org.junit.Assert.*;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.ArgumentMatchers.argThat;
+import static org.hamcrest.Matchers.hasEntry;
+import static org.hamcrest.Matchers.is;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.given;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static org.hamcrest.Matchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 /**
  * @author Etienne Homer <etienne.homer at rte-france.com>
  */
-@RunWith(SpringRunner.class)
 @WebMvcTest(CaseValidationController.class)
 @ContextConfiguration(classes = {CaseValidationApplication.class})
-public class CaseValidationTest {
+class CaseValidationTest {
     @Autowired
     private MockMvc mvc;
 
     @MockBean
     private LoadFlowService loadFlowService;
 
-    @Before
-    public void setUp() {
+    @BeforeEach
+    void setUp() {
         MockitoAnnotations.initMocks(this);
     }
 
-    @Test(expected = ServletException.class)
-    public void testUnfoundNetwork() throws Exception {
-        UUID notFoundNetworkId = UUID.fromString("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa");
+    @Test
+    void testUnfoundNetwork() {
+        assertThrows(ServletException.class, () -> {
+            UUID notFoundNetworkId = UUID.fromString("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa");
 
-        // network not existing
-        given(loadFlowService.run(eq(notFoundNetworkId), any(), any(), any())).willThrow(new PowsyblException());
-        mvc.perform(put("/v1/networks/{networkUuid}/validate", notFoundNetworkId))
-                .andExpect(result -> assertTrue(result.getResolvedException() instanceof PowsyblException));
+            // network not existing
+            given(loadFlowService.run(eq(notFoundNetworkId), any(), any(), any())).willThrow(new PowsyblException());
+            mvc.perform(put("/v1/networks/{networkUuid}/validate", notFoundNetworkId))
+                    .andExpect(result -> assertInstanceOf(PowsyblException.class, result.getResolvedException()));
+        });
     }
 
     @Test
-    public void test() throws Exception {
+    void test() throws Exception {
         UUID testNetworkId = UUID.fromString("7928181c-7977-4592-ba19-88027e4254e4");
         UUID reportId = UUID.fromString("12345679-9876-6543-1478-123698745698");
 
@@ -114,6 +111,5 @@ public class CaseValidationTest {
             .andExpect(jsonPath("$.validationOk", is(false)))
             .andExpect(jsonPath("$.loadFlowReport", hasEntry("status", "FAILED")))
             .andReturn();
-
     }
 }
