@@ -29,7 +29,7 @@ class LoadFlowCaseValidationService {
         //Validation with default loadflow parameters
         LoadFlowParameters params = new LoadFlowParameters()
                 .setTransformerVoltageControlOn(true)
-                .setSimulShunt(true)
+                .setShuntCompensatorVoltageControlOn(true)
                 .setDistributedSlack(true)
                 .setBalanceType(LoadFlowParameters.BalanceType.PROPORTIONAL_TO_GENERATION_P_MAX)
                 .setReadSlackBus(true)
@@ -40,7 +40,7 @@ class LoadFlowCaseValidationService {
 
         //Validation with relaxed loadflow parameters
         params.setTransformerVoltageControlOn(false);
-        params.setSimulShunt(false);
+        params.setShuntCompensatorVoltageControlOn(false);
 
         boolean isLoadFlowOk = validate(networkUuid, params, reportUuid, "relaxedLoadflow");
         return new LoadFlowCaseValidationReport(isLoadFlowOk ? LoadFlowCaseValidationReport.Status.CONVERGED_ON_2D_LF : LoadFlowCaseValidationReport.Status.FAILED);
