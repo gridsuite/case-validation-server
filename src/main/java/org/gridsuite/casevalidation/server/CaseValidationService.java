@@ -20,7 +20,7 @@ class CaseValidationService {
     @Autowired
     private LoadFlowCaseValidationService loadFlowCaseValidationService;
 
-    public CaseValidationService(LoadFlowCaseValidationService loadFlowCaseValidationService) {
+    CaseValidationService(LoadFlowCaseValidationService loadFlowCaseValidationService) {
         this.loadFlowCaseValidationService = loadFlowCaseValidationService;
     }
 

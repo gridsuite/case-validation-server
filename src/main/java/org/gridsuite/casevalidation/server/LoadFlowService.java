@@ -22,7 +22,7 @@ import java.io.ByteArrayOutputStream;
 import java.util.UUID;
 
 /**
- * @author Etienne Homer<etienne.homer at rte-france.com
+ * @author Etienne Homer<etienne.homer at rte-france.com>
  */
 @Service
 public class LoadFlowService {
