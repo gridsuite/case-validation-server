@@ -7,6 +7,7 @@
 package org.gridsuite.casevalidation.server;
 
 import com.powsybl.commons.PowsyblException;
+import com.powsybl.loadflow.LoadFlowParameters;
 import com.powsybl.loadflow.LoadFlowResult;
 import com.powsybl.loadflow.LoadFlowResultImpl;
 import jakarta.servlet.ServletException;
@@ -72,8 +73,8 @@ class CaseValidationTest {
                 new LoadFlowResultImpl.ComponentResultImpl(0, 0,
                         LoadFlowResult.ComponentResult.Status.CONVERGED, 5, "slackBusId",
                         0, 0));
-        given(loadFlowService.run(eq(testNetworkId), argThat(params -> params.isTransformerVoltageControlOn()), any(), any())).willReturn(new LoadFlowResultImpl(true, Collections.emptyMap(), null,
-                componentResults));
+        given(loadFlowService.run(eq(testNetworkId), argThat(LoadFlowParameters::isTransformerVoltageControlOn), any(), any()))
+                .willReturn(new LoadFlowResultImpl(true, Collections.emptyMap(), null, componentResults));
 
         mvc.perform(put("/v1/networks/{networkUuid}/validate", testNetworkId))
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
@@ -84,14 +85,18 @@ class CaseValidationTest {
 
         //Loadlow diverges with default parameters and converges with relaxed ones
         //Validation with default loadflow parameters
-        componentResults = Collections.singletonList(new LoadFlowResultImpl.ComponentResultImpl(0, 0, LoadFlowResult.ComponentResult.Status.MAX_ITERATION_REACHED, 5, "slackBusId", 0, 0));
-        given(loadFlowService.run(eq(testNetworkId), argThat(params -> params.isTransformerVoltageControlOn()), any(), any())).willReturn(new LoadFlowResultImpl(true, Collections.emptyMap(), null,
-                componentResults));
+        componentResults = Collections.singletonList(new LoadFlowResultImpl.ComponentResultImpl(0, 0,
+                LoadFlowResult.ComponentResult.Status.MAX_ITERATION_REACHED, 5, "slackBusId",
+                0, 0));
+        given(loadFlowService.run(eq(testNetworkId), argThat(LoadFlowParameters::isTransformerVoltageControlOn), any(), any()))
+                .willReturn(new LoadFlowResultImpl(true, Collections.emptyMap(), null, componentResults));
 
         //Validation with relaxed loadflow parameters
-        componentResults = Collections.singletonList(new LoadFlowResultImpl.ComponentResultImpl(0, 0, LoadFlowResult.ComponentResult.Status.CONVERGED, 5, "slackBusId", 0, 0));
-        given(loadFlowService.run(eq(testNetworkId), argThat(params -> !params.isTransformerVoltageControlOn()), any(), any())).willReturn(new LoadFlowResultImpl(true, Collections.emptyMap(), null,
-                componentResults));
+        componentResults = Collections.singletonList(new LoadFlowResultImpl.ComponentResultImpl(0, 0,
+                LoadFlowResult.ComponentResult.Status.CONVERGED, 5, "slackBusId",
+                0, 0));
+        given(loadFlowService.run(eq(testNetworkId), argThat(params -> !params.isTransformerVoltageControlOn()), any(), any()))
+                .willReturn(new LoadFlowResultImpl(true, Collections.emptyMap(), null, componentResults));
         mvc.perform(put("/v1/networks/{networkUuid}/validate", testNetworkId))
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
@@ -101,7 +106,8 @@ class CaseValidationTest {
 
         //Loadflow diverges with both default and relaxed parameters
         componentResults = Collections.singletonList(new LoadFlowResultImpl.ComponentResultImpl(0, 0, LoadFlowResult.ComponentResult.Status.MAX_ITERATION_REACHED, 5, "slackBusId", 0, 0));
-        given(loadFlowService.run(eq(testNetworkId), any(), any(), any())).willReturn(new LoadFlowResultImpl(true, Collections.emptyMap(), null, componentResults));
+        given(loadFlowService.run(eq(testNetworkId), any(), any(), any()))
+                .willReturn(new LoadFlowResultImpl(true, Collections.emptyMap(), null, componentResults));
         mvc.perform(put("/v1/networks/{networkUuid}/validate", testNetworkId))
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
@@ -109,7 +115,8 @@ class CaseValidationTest {
                 .andExpect(jsonPath("$.loadFlowReport", hasEntry("status", "FAILED")))
                 .andReturn();
 
-        given(loadFlowService.run(eq(testNetworkId), any(), any(), any())).willReturn(new LoadFlowResultImpl(true, Collections.emptyMap(), null, componentResults));
+        given(loadFlowService.run(eq(testNetworkId), any(), any(), any()))
+                .willReturn(new LoadFlowResultImpl(true, Collections.emptyMap(), null, componentResults));
         mvc.perform(put("/v1/networks/{networkUuid}/validate?reportId={reportId}", testNetworkId, reportId))
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
