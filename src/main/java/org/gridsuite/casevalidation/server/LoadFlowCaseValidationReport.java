@@ -24,6 +24,6 @@ public class LoadFlowCaseValidationReport {
     public enum Status {
         CONVERGED_ON_1ST_LF,
         CONVERGED_ON_2D_LF,
-        FAILED;
+        FAILED
     }
 }
